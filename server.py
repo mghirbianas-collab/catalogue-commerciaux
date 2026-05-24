@@ -39,13 +39,13 @@ def init_db():
     conn.close()
 
 # Nouvelle route : Distribue l'interface HTML directement depuis le même port
-@app.get("/", response_class=HTMLResponse)
-def read_index():
-    if os.path.exists("index.html"):
-        with open("index.html", "r", encoding="utf-8") as file:
-            return file.read()
-    return "<h1>Erreur : Le fichier index.html est introuvable dans le dossier.</h1>"
-
+@app.get("/")
+async def read_index():
+    index_path = os.path.join(BASE_DIR, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    else:
+        return {"erreur": f"Fichier index.html introuvable. Dossier actuel : {BASE_DIR}"}
 @app.get("/api/articles")
 def get_articles():
     try:
